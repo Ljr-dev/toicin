@@ -1,0 +1,7 @@
+node_modules/
+database.sqlite
+npm-debug.log*
+.env
+
+public/uploads/*
+!public/uploads/.gitkeep
