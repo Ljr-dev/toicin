@@ -1,18 +1,18 @@
 function settingsFields(data = {}) {
   settingsForm.innerHTML = `
-    <label>Nome da loja<input name="store_name" value="${data.store_name || ''}"></label>
-    <label>Logo atual<input name="logo_url" value="${data.logo_url || ''}" placeholder="/uploads/logo.png"></label>
+    <label>Nome da loja<input name="store_name" value="${escapeHtml(data.store_name || '')}" maxlength="80"></label>
+    <label>Logo atual<input name="logo_url" value="${escapeHtml(data.logo_url || '')}" placeholder="/uploads/logo.jpg"></label>
     <label>Novo logo<input name="logo" type="file" accept="image/*"></label>
-    <label>Imagem de fundo atual<input name="hero_image_url" value="${data.hero_image_url || ''}" placeholder="/uploads/fundo.jpg"></label>
+    <label>Imagem de fundo atual<input name="hero_image_url" value="${escapeHtml(data.hero_image_url || '')}" placeholder="/uploads/fundo.jpg"></label>
     <label>Nova imagem de fundo<input name="hero_image" type="file" accept="image/*"></label>
-    <label>WhatsApp<input name="whatsapp" value="${data.whatsapp || ''}"></label>
-    <label>Instagram<input name="instagram" value="${data.instagram || ''}"></label>
-    <label>Cidade<input name="city" value="${data.city || ''}"></label>
-    <label>Frase principal<input name="headline" value="${data.headline || ''}"></label>
-    <label>Descricao<textarea name="description">${data.description || ''}</textarea></label>
-    <label>Cor principal<input name="primary_color" type="color" value="${data.primary_color || '#11c5a6'}"></label>
-    <label>Cor secundaria<input name="secondary_color" type="color" value="${data.secondary_color || '#101828'}"></label>
-    <button class="admin-btn">Salvar configuracoes</button>`;
+    <label>WhatsApp<input name="whatsapp" value="${escapeHtml(data.whatsapp || '')}" placeholder="5511999999999"></label>
+    <label>Instagram<input name="instagram" value="${escapeHtml(data.instagram || '')}" placeholder="https://instagram.com/sualoja"></label>
+    <label>Cidade<input name="city" value="${escapeHtml(data.city || '')}"></label>
+    <label>Frase principal<input name="headline" value="${escapeHtml(data.headline || '')}" maxlength="120"></label>
+    <label>Descrição<textarea name="description" rows="3">${escapeHtml(data.description || '')}</textarea></label>
+    <label>Cor principal<input name="primary_color" type="color" value="${escapeHtml(data.primary_color || '#11c5a6')}"></label>
+    <label>Cor secundária<input name="secondary_color" type="color" value="${escapeHtml(data.secondary_color || '#101828')}"></label>
+    <button class="admin-btn form-submit">Salvar configurações</button>`;
 }
 
 async function loadSettings() {
@@ -22,14 +22,18 @@ async function loadSettings() {
 
 settingsForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  await api('/api/admin/settings', { method: 'PUT', body: new FormData(settingsForm) });
-  message.textContent = 'Configuracoes salvas.';
+  try {
+    await api('/api/admin/settings', { method: 'PUT', body: new FormData(settingsForm) });
+    message.textContent = 'Configurações salvas.';
+  } catch (error) {
+    message.textContent = error.message;
+  }
 });
 
 function faqRow(faq = {}) {
-  return `<article class="faq-row" data-id="${faq.id || ''}">
-    <input name="question" placeholder="Pergunta" value="${faq.question || ''}">
-    <textarea name="answer" placeholder="Resposta">${faq.answer || ''}</textarea>
+  return `<article class="faq-row" data-id="${escapeHtml(faq.id || '')}">
+    <input name="question" placeholder="Pergunta" value="${escapeHtml(faq.question || '')}">
+    <textarea name="answer" placeholder="Resposta">${escapeHtml(faq.answer || '')}</textarea>
     <label class="check"><input name="active" type="checkbox" ${faq.active !== 0 ? 'checked' : ''}> Ativa</label>
     <button type="button" data-action="save">Salvar</button>
     ${faq.id ? '<button type="button" data-action="delete">Excluir</button>' : ''}
@@ -69,3 +73,29 @@ faqList.addEventListener('click', async (event) => {
 });
 
 loadSettings();
+
+const passwordForm = document.getElementById('passwordForm');
+if (passwordForm) {
+  passwordForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const passwordMessage = document.getElementById('passwordMessage');
+    const data = Object.fromEntries(new FormData(passwordForm));
+
+    if (data.newPassword !== data.confirmPassword) {
+      passwordMessage.textContent = 'A confirmação não confere com a nova senha.';
+      return;
+    }
+
+    try {
+      await api('/api/admin/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword: data.currentPassword, newPassword: data.newPassword })
+      });
+      passwordForm.reset();
+      passwordMessage.textContent = 'Senha alterada com sucesso.';
+    } catch (error) {
+      passwordMessage.textContent = error.message;
+    }
+  });
+}

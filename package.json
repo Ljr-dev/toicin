@@ -1,7 +1,7 @@
 {
-  "name": "loja-toicin",
-  "version": "1.0.0",
-  "description": "Vitrine digital para veiculos eletricos com painel administrativo.",
+  "name": "loja-generica",
+  "version": "2.0.0",
+  "description": "Vitrine digital para qualquer tipo de produto, com painel administrativo e deploy em Docker.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -1,9 +1,19 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Editar produto</title><link rel="stylesheet" href="/css/admin.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Editar produto</title><meta name="robots" content="noindex"><link rel="stylesheet" href="/css/admin.css"></head>
 <body>
-  <aside class="sidebar"><h2>Editar produto</h2><a href="/admin/dashboard.html">Dashboard</a><a href="/admin/produtos.html">Produtos</a><a href="/admin/configuracoes.html">Configuracoes</a><button id="logout">Sair</button></aside>
+  <aside class="sidebar">
+    <h2>Painel</h2>
+    <a href="/admin/dashboard.html">Dashboard</a>
+    <a href="/admin/produtos.html">Produtos</a>
+    <a href="/admin/novo-produto.html">Novo produto</a>
+    <a href="/admin/categorias.html">Categorias</a>
+    <a href="/admin/configuracoes.html">Configurações</a>
+    <a href="/" target="_blank" rel="noopener">Ver loja</a>
+    <button id="logout">Sair</button>
+  </aside>
   <main class="admin-main"><h1>Editar produto</h1><form id="productForm" class="form-grid"></form><section><h2>Imagens</h2><div id="imageList" class="image-list"></div></section><p id="message"></p></main>
+  <script src="/js/common.js"></script>
   <script src="/js/admin.js"></script><script src="/js/produto-form.js"></script>
 </body>
 </html>

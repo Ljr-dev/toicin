@@ -1,7 +1,11 @@
 node_modules/
 database.sqlite
-npm-debug.log*
+database.sqlite-wal
+database.sqlite-shm
+data/
+tmp-test/
 .env
+npm-debug.log*
 
 public/uploads/*
 !public/uploads/.gitkeep

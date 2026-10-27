@@ -1,8 +1,19 @@
 async function api(url, options = {}) {
   const response = await fetch(url, options);
-  if (response.status === 401) location.href = '/admin/login.html';
-  if (!response.ok) throw new Error((await response.json()).error || 'Erro na requisicao');
-  return response.json();
+  const isJson = (response.headers.get('content-type') || '').includes('application/json');
+  const data = isJson ? await response.json() : null;
+
+  if (response.status === 401) {
+    const isLoginPage = location.pathname.endsWith('/login.html');
+    if (!isLoginPage) location.href = '/admin/login.html';
+    throw new Error(data?.error || 'Sessão expirada. Faça login novamente.');
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.error || `Erro ${response.status} na requisição`);
+  }
+
+  return data;
 }
 
 const loginForm = document.getElementById('loginForm');
@@ -29,5 +40,7 @@ async function loadDashboard() {
   totalProducts.textContent = data.totalProducts;
   activeProducts.textContent = data.activeProducts;
   totalFaqs.textContent = data.totalFaqs;
+  const totalCategories = document.getElementById('totalCategories');
+  if (totalCategories) totalCategories.textContent = data.totalCategories ?? 0;
 }
 loadDashboard();

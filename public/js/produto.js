@@ -1,36 +1,114 @@
-const money = (value) => Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-const wa = (number, text) => `https://wa.me/${String(number || '').replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
-const fallbackImage = 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=1000&q=80';
 const slug = new URLSearchParams(location.search).get('slug');
 
-async function loadProduct() {
-  const product = await fetch(`/api/products/${slug}`).then((r) => r.ok ? r.json() : null);
-  if (!product) {
-    document.querySelector('main').innerHTML = '<section class="section"><h1>Produto nao encontrado</h1></section>';
-    return;
-  }
-  const settings = product.settings || {};
-  document.title = product.name;
-  storeName.textContent = settings.store_name || 'Loja Toicin';
-  logo.src = settings.logo_url || '';
-  logo.style.display = settings.logo_url ? 'block' : 'none';
-  category.textContent = product.category_name || '';
-  productName.textContent = product.name;
-  price.textContent = money(product.price);
-  shortDescription.textContent = product.short_description || '';
-  fullDescription.textContent = product.full_description || '';
-  const images = product.images?.length ? product.images : [{ image_url: fallbackImage }];
-  mainImage.src = images[0].image_url;
-  thumbs.innerHTML = images.map((image) => `<button type="button"><img src="${image.image_url}" alt=""></button>`).join('');
-  thumbs.querySelectorAll('button').forEach((button, index) => button.onclick = () => { mainImage.src = images[index].image_url; });
-  const specMap = {
-    Motor: product.motor, Bateria: product.battery, Autonomia: product.autonomy,
-    'Velocidade maxima': product.max_speed, 'Tempo de carga': product.charging_time,
-    'Peso suportado': product.max_weight, Garantia: product.warranty, Pagamento: product.payment_info
-  };
-  specs.innerHTML = Object.entries(specMap).filter(([, value]) => value).map(([key, value]) => `<dt>${key}</dt><dd>${value}</dd>`).join('');
-  faqs.innerHTML = (product.faqs || []).map((f) => `<details><summary>${f.question}</summary><p>${f.answer}</p></details>`).join('');
-  fixedWhatsapp.href = wa(settings.whatsapp, `Ola, vi o produto ${product.name} no site e tenho interesse. Pode me passar mais detalhes?`);
+function notFound() {
+  document.title = 'Produto não encontrado';
+  const main = document.querySelector('main');
+  if (main) main.innerHTML = '<section class="section"><h1>Produto não encontrado</h1><p>O produto que você procura não está mais disponível.</p><a class="btn" href="/catalogo.html">Voltar ao catálogo</a></section>';
 }
 
-loadProduct();
+async function loadProduct() {
+  if (!slug) return notFound();
+
+  let product;
+  try {
+    product = await fetchJson(`/api/products/${encodeURIComponent(slug)}`);
+  } catch {
+    return notFound();
+  }
+
+  const settings = product.settings || {};
+  applyBranding(settings, product.name);
+
+  const categoryEl = document.getElementById('category');
+  if (categoryEl) {
+    categoryEl.textContent = product.category_name || '';
+    categoryEl.hidden = !product.category_name;
+  }
+
+  const nameEl = document.getElementById('productName');
+  if (nameEl) nameEl.textContent = product.name;
+
+  const priceEl = document.getElementById('price');
+  if (priceEl) priceEl.textContent = priceLabel(product.price);
+
+  const shortEl = document.getElementById('shortDescription');
+  if (shortEl) {
+    shortEl.textContent = product.short_description || '';
+    shortEl.hidden = !product.short_description;
+  }
+
+  const fullEl = document.getElementById('fullDescription');
+  if (fullEl) {
+    fullEl.textContent = product.full_description || '';
+    fullEl.hidden = !product.full_description;
+  }
+
+  const specs = (product.specs || []).filter((spec) => spec.label && spec.value);
+  const specsBlock = document.getElementById('specsBlock');
+  const specsEl = document.getElementById('specs');
+  if (specs.length && specsBlock && specsEl) {
+    specsEl.innerHTML = specs
+      .map((spec) => `<dt>${escapeHtml(spec.label)}</dt><dd>${escapeHtml(spec.value)}</dd>`)
+      .join('');
+  } else if (specsBlock) {
+    specsBlock.hidden = true;
+  }
+
+  const faqs = product.faqs || [];
+  const faqSection = document.getElementById('faqSection');
+  const faqsEl = document.getElementById('faqs');
+  if (faqs.length && faqSection && faqsEl) {
+    faqsEl.innerHTML = faqs
+      .map((faq) => `<details><summary>${escapeHtml(faq.question)}</summary><p>${escapeHtml(faq.answer)}</p></details>`)
+      .join('');
+  } else if (faqSection) {
+    faqSection.hidden = true;
+  }
+
+  const images = (product.images || []).map((image) => image.image_url).filter(Boolean);
+  const mainImage = document.getElementById('mainImage');
+  const thumbs = document.getElementById('thumbs');
+
+  const selectImage = (index) => {
+    if (!mainImage) return;
+    mainImage.src = images[index] || fallbackImage;
+    mainImage.alt = `${product.name} - imagem ${index + 1}`;
+    if (!thumbs) return;
+    thumbs.querySelectorAll('button').forEach((button, buttonIndex) => {
+      button.classList.toggle('is-active', buttonIndex === index);
+    });
+  };
+
+  if (!images.length) images.push(fallbackImage);
+
+  if (thumbs) {
+    thumbs.innerHTML = images
+      .map((image, index) => `<button type="button" aria-label="Ver imagem ${index + 1}"><img src="${escapeHtml(image)}" alt="" loading="lazy"></button>`)
+      .join('');
+    thumbs.hidden = images.length <= 1;
+    thumbs.addEventListener('click', (event) => {
+      const button = event.target.closest('button');
+      if (!button) return;
+      selectImage(Array.from(thumbs.children).indexOf(button));
+    });
+  }
+
+  selectImage(0);
+
+  const addToCartBtn = document.getElementById('addToCartBtn');
+  if (addToCartBtn) {
+    addToCartBtn.dataset.slug = product.slug;
+    addToCartBtn.dataset.name = product.name;
+    addToCartBtn.dataset.price = String(Number(product.price) || 0);
+    addToCartBtn.dataset.image = images[0] || '';
+    addToCartBtn.hidden = false;
+  }
+
+  const fixedWhatsapp = document.getElementById('fixedWhatsapp');
+  setWhatsappLink(fixedWhatsapp, settings, `Olá! Vi o produto ${product.name} no site e tenho interesse. Pode me passar mais detalhes?`);
+}
+
+loadProduct().catch((error) => {
+  console.error(error);
+  notFound();
+});

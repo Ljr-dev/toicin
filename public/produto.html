@@ -3,28 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Produto</title>
+  <title>Produto | Minha Loja</title>
+  <meta name="description" content="Detalhes do produto, fotos, especificações e contato direto pelo WhatsApp.">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/"><img id="logo" alt=""><span id="storeName">Loja Toicin</span></a>
-    <nav><a href="/catalogo.html">Catalogo</a><a href="/faq.html">FAQ</a></nav>
+    <a class="brand" href="/"><img id="logo" alt="" hidden><span id="storeName">Minha Loja</span></a>
+    <nav><a href="/">Início</a><a href="/catalogo.html">Catálogo</a><a href="/faq.html">FAQ</a><a class="cart-link" href="/carrinho.html">Carrinho <span class="cart-count" data-cart-count hidden>0</span></a></nav>
   </header>
   <main class="product-page">
-    <section class="gallery"><img id="mainImage" class="main-image" alt=""><div id="thumbs" class="thumbs"></div></section>
+    <section class="gallery"><img id="mainImage" class="main-image" alt="" src="/img/placeholder.svg"><div id="thumbs" class="thumbs" hidden></div></section>
     <section class="product-info">
-      <p class="eyebrow" id="category"></p>
+      <p class="eyebrow" id="category" hidden></p>
       <h1 id="productName"></h1>
       <strong id="price" class="price"></strong>
-      <p id="shortDescription"></p>
-      <p id="fullDescription"></p>
-      <h2>Especificacoes</h2>
-      <dl id="specs" class="specs"></dl>
+      <div class="product-buy">
+        <label class="qty-field" for="quantity">Quantidade
+          <input id="quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric">
+        </label>
+        <button id="addToCartBtn" class="btn" type="button" data-add-to-cart data-use-quantity hidden>Adicionar ao carrinho</button>
+      </div>
+      <p id="shortDescription" hidden></p>
+      <p id="fullDescription" hidden></p>
+      <div id="specsBlock">
+        <h2>Especificações</h2>
+        <dl id="specs" class="specs"></dl>
+      </div>
     </section>
-    <section class="section wide"><h2>Perguntas frequentes</h2><div id="faqs" class="faq-list"></div></section>
+    <section class="section wide" id="faqSection"><h2>Perguntas frequentes</h2><div id="faqs" class="faq-list"></div></section>
   </main>
-  <a id="fixedWhatsapp" class="fixed-whatsapp" target="_blank">Tenho interesse</a>
+  <a id="fixedCart" class="fixed-cart" href="/carrinho.html" hidden>Carrinho <span class="cart-count" data-cart-count hidden>0</span></a>
+  <a id="fixedWhatsapp" class="fixed-whatsapp" target="_blank" rel="noopener" hidden>Tenho interesse</a>
+  <script src="/js/common.js"></script>
+  <script src="/js/cart.js"></script>
   <script src="/js/produto.js"></script>
 </body>
 </html>

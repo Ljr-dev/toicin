@@ -1,9 +1,18 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Produtos</title><link rel="stylesheet" href="/css/admin.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Produtos</title><meta name="robots" content="noindex"><link rel="stylesheet" href="/css/admin.css"></head>
 <body>
-  <aside class="sidebar"><h2>Produtos</h2><a href="/admin/dashboard.html">Dashboard</a><a href="/admin/novo-produto.html">Novo produto</a><a href="/admin/configuracoes.html">Configuracoes</a><button id="logout">Sair</button></aside>
-  <main class="admin-main"><div class="topline"><h1>Produtos</h1><a class="admin-btn" href="/admin/novo-produto.html">Novo produto</a></div><div class="table-wrap"><table><thead><tr><th>Foto</th><th>Nome</th><th>Categoria</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="productsTable"></tbody></table></div></main>
+  <aside class="sidebar">
+    <h2>Painel</h2>
+    <a href="/admin/dashboard.html">Dashboard</a>
+    <a href="/admin/novo-produto.html">Novo produto</a>
+    <a href="/admin/categorias.html">Categorias</a>
+    <a href="/admin/configuracoes.html">Configurações</a>
+    <a href="/" target="_blank" rel="noopener">Ver loja</a>
+    <button id="logout">Sair</button>
+  </aside>
+  <main class="admin-main"><div class="topline"><h1>Produtos</h1><a class="admin-btn" href="/admin/novo-produto.html">Novo produto</a></div><div class="table-wrap"><table><thead><tr><th>Foto</th><th>Nome</th><th>Categoria</th><th>Status</th><th>Ações</th></tr></thead><tbody id="productsTable"></tbody></table></div></main>
+  <script src="/js/common.js"></script>
   <script src="/js/admin.js"></script><script src="/js/produtos-admin.js"></script>
 </body>
 </html>

@@ -1,8 +1,15 @@
+const fs = require('fs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-const dbPath = path.join(__dirname, '..', 'database.sqlite');
+const dbPath = process.env.DB_PATH || path.join(__dirname, '..', 'database.sqlite');
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+
 const db = new sqlite3.Database(dbPath);
+
+db.run('PRAGMA journal_mode = WAL');
+db.run('PRAGMA foreign_keys = ON');
+db.run('PRAGMA busy_timeout = 5000');
 
 function run(sql, params = []) {
   return new Promise((resolve, reject) => {
@@ -31,4 +38,4 @@ function all(sql, params = []) {
   });
 }
 
-module.exports = { db, run, get, all };
+module.exports = { db, dbPath, run, get, all };

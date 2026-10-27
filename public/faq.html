@@ -3,18 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FAQ</title>
+  <title>FAQ | Minha Loja</title>
+  <meta name="description" content="Perguntas frequentes sobre compra, entrega e pagamento.">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/"><img id="logo" alt=""><span id="storeName">Loja Toicin</span></a>
-    <nav><a href="/">Inicio</a><a href="/catalogo.html">Catalogo</a></nav>
+    <a class="brand" href="/"><img id="logo" alt="" hidden><span id="storeName">Minha Loja</span></a>
+    <nav><a href="/">Início</a><a href="/catalogo.html">Catálogo</a><a class="cart-link" href="/carrinho.html">Carrinho <span class="cart-count" data-cart-count hidden>0</span></a></nav>
   </header>
   <main class="section faq-page">
     <h1>Perguntas frequentes</h1>
     <div id="faqs" class="faq-list"></div>
   </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/cart.js"></script>
   <script src="/js/faq.js"></script>
 </body>
 </html>

@@ -1,5 +1,16 @@
 const bcrypt = require('bcrypt');
-const { run, get } = require('./db');
+const { run, get, all } = require('./db');
+
+const LEGACY_SPECS = [
+  ['Motor', 'motor'],
+  ['Bateria', 'battery'],
+  ['Autonomia', 'autonomy'],
+  ['Velocidade máxima', 'max_speed'],
+  ['Tempo de carga', 'charging_time'],
+  ['Peso suportado', 'max_weight'],
+  ['Garantia', 'warranty'],
+  ['Pagamento', 'payment_info']
+];
 
 async function initDb() {
   await run(`CREATE TABLE IF NOT EXISTS settings (
@@ -66,19 +77,36 @@ async function initDb() {
     active INTEGER DEFAULT 1
   )`);
 
+  await run(`CREATE TABLE IF NOT EXISTS product_specs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    label TEXT NOT NULL,
+    value TEXT,
+    sort_order INTEGER DEFAULT 0,
+    FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE
+  )`);
+  await run('CREATE INDEX IF NOT EXISTS idx_product_specs_product ON product_specs (product_id)');
+
+  await run(`CREATE TABLE IF NOT EXISTS sessions (
+    sid TEXT PRIMARY KEY,
+    sess TEXT NOT NULL,
+    expires INTEGER
+  )`);
+  await run('CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions (expires)');
+
   const settings = await get('SELECT id FROM settings LIMIT 1');
   if (!settings) {
     await run(`INSERT INTO settings
       (store_name, logo_url, hero_image_url, whatsapp, instagram, city, headline, description, primary_color, secondary_color)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
-      'Loja Toicin',
+      'Minha Loja',
       '',
       '',
-      '5511999999999',
-      'https://instagram.com/lojatoicin',
-      'Sao Paulo',
-      'Mobilidade eletrica para sua rotina',
-      'Motos eletricas, bicicletas eletricas e scooters selecionadas para economia, estilo e praticidade.',
+      '',
+      '',
+      '',
+      'Tudo o que você procura em um só lugar',
+      'Produtos selecionados com qualidade, preço justo e atendimento direto pelo WhatsApp.',
       '#11c5a6',
       '#101828'
     ]);
@@ -90,21 +118,38 @@ async function initDb() {
     await run('INSERT INTO admins (name, email, password_hash) VALUES (?, ?, ?)', ['Administrador', 'admin@admin.com', hash]);
   }
 
-  const categories = [
-    ['Motos Eletricas', 'motos-eletricas'],
-    ['Bicicletas Eletricas', 'bicicletas-eletricas'],
-    ['Scooters', 'scooters']
-  ];
-  for (const [name, slug] of categories) {
-    const exists = await get('SELECT id FROM categories WHERE slug = ?', [slug]);
-    if (!exists) await run('INSERT INTO categories (name, slug) VALUES (?, ?)', [name, slug]);
+  const categoryCount = await get('SELECT COUNT(*) AS count FROM categories');
+  if (!categoryCount.count) {
+    await run('INSERT INTO categories (name, slug) VALUES (?, ?)', ['Geral', 'geral']);
   }
 
   const faq = await get('SELECT id FROM faqs LIMIT 1');
   if (!faq) {
-    await run('INSERT INTO faqs (question, answer, active) VALUES (?, ?, 1)', ['Os veiculos possuem garantia?', 'Sim. A garantia varia por modelo e fica descrita na pagina do produto.']);
-    await run('INSERT INTO faqs (question, answer, active) VALUES (?, ?, 1)', ['Voces entregam em outras cidades?', 'Entre em contato pelo WhatsApp para confirmar disponibilidade de entrega para sua regiao.']);
-    await run('INSERT INTO faqs (question, answer, active) VALUES (?, ?, 1)', ['Posso financiar ou parcelar?', 'As condicoes de pagamento podem variar por produto e campanha. Consulte o vendedor pelo WhatsApp.']);
+    await run('INSERT INTO faqs (question, answer, active) VALUES (?, ?, 1)', ['Como faço para comprar?', 'Escolha o produto no catálogo e fale com a loja pelo WhatsApp. O atendimento combina pagamento, entrega ou retirada.']);
+    await run('INSERT INTO faqs (question, answer, active) VALUES (?, ?, 1)', ['Vocês entregam na minha cidade?', 'Entre em contato pelo WhatsApp informando seu endereço para confirmar prazo e valor da entrega.']);
+    await run('INSERT INTO faqs (question, answer, active) VALUES (?, ?, 1)', ['Quais formas de pagamento vocês aceitam?', 'As formas de pagamento podem variar por produto. Consulte o vendedor pelo WhatsApp.']);
+  }
+
+  await migrateLegacySpecs();
+}
+
+async function migrateLegacySpecs() {
+  const products = await all('SELECT * FROM products');
+  for (const product of products) {
+    const existing = await get('SELECT COUNT(*) AS count FROM product_specs WHERE product_id = ?', [product.id]);
+    if (existing.count > 0) continue;
+
+    let order = 0;
+    for (const [label, column] of LEGACY_SPECS) {
+      if (!product[column]) continue;
+      await run('INSERT INTO product_specs (product_id, label, value, sort_order) VALUES (?, ?, ?, ?)', [
+        product.id,
+        label,
+        product[column],
+        order
+      ]);
+      order += 1;
+    }
   }
 }
 

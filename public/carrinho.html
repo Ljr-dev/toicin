@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrinho | Minha Loja</title>
+  <meta name="description" content="Revise seu pedido e finalize a compra pelo WhatsApp da loja.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/"><img id="logo" alt="" hidden><span id="storeName">Minha Loja</span></a>
+    <nav>
+      <a href="/">Início</a>
+      <a href="/catalogo.html">Catálogo</a>
+      <a href="/faq.html">FAQ</a>
+      <a class="cart-link" href="/carrinho.html" aria-current="page">Carrinho <span class="cart-count" data-cart-count hidden>0</span></a>
+    </nav>
+  </header>
+
+  <main class="section cart-page">
+    <div class="section-title">
+      <h1>Seu carrinho</h1>
+      <a href="/catalogo.html">Continuar comprando</a>
+    </div>
+
+    <div id="cartLayout" class="cart-layout">
+      <section id="cartItems" class="cart-items" aria-live="polite"></section>
+
+      <aside id="cartSummary" class="cart-summary" aria-labelledby="summaryTitle">
+        <h2 id="summaryTitle">Resumo do pedido</h2>
+
+        <dl class="cart-totals">
+          <div><dt>Itens</dt><dd id="cartItemCount">0</dd></div>
+          <div><dt>Total</dt><dd id="cartSubtotal">R$ 0,00</dd></div>
+        </dl>
+
+        <form id="customerForm" class="cart-form" autocomplete="on">
+          <label for="customerName">Seu nome
+            <input id="customerName" name="name" type="text" maxlength="80" placeholder="Como podemos te chamar?" autocomplete="name">
+          </label>
+          <label for="customerNote">Observações (opcional)
+            <textarea id="customerNote" name="note" rows="3" maxlength="500" placeholder="Entrega, retirada, cor, tamanho..."></textarea>
+          </label>
+        </form>
+
+        <button id="checkoutBtn" class="btn whatsapp" type="button" disabled>Finalizar compra no WhatsApp</button>
+        <p id="checkoutHint" class="cart-hint" role="status"></p>
+        <button id="clearCartBtn" class="cart-clear" type="button">Esvaziar carrinho</button>
+      </aside>
+    </div>
+  </main>
+
+  <footer><span id="footerStore">Minha Loja</span> · Todos os direitos reservados</footer>
+
+  <a id="fixedWhatsapp" class="fixed-whatsapp" target="_blank" rel="noopener" hidden>Fale no WhatsApp</a>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/carrinho.js"></script>
+</body>
+</html>

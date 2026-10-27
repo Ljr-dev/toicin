@@ -64,8 +64,25 @@ input, textarea, select {
   color: var(--text); background: #0c1424;
 }
 textarea { min-height: 100px; resize: vertical; }
-label:has(textarea), .form-grid button { grid-column: 1 / -1; }
+label:has(textarea), .form-grid .full, .form-grid .form-submit { grid-column: 1 / -1; }
 #message { color: var(--primary); font-weight: 800; }
+
+.spec-editor {
+  grid-column: 1 / -1;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.spec-editor h2 { margin: 0; }
+.spec-editor .topline { margin: 0 0 8px; }
+.spec-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 10px; align-items: center; }
+.spec-row button { background: var(--danger); color: white; }
+.hint { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+
+.inline-form { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; max-width: 640px; }
+.inline-form input { flex: 1 1 240px; }
+.category-name { min-width: 180px; }
 
 .image-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
 .image-list article { overflow: hidden; }
@@ -80,6 +97,7 @@ label:has(textarea), .form-grid button { grid-column: 1 / -1; }
 @media (max-width: 820px) {
   .sidebar { position: static; width: auto; }
   .admin-main { margin-left: 0; padding: 20px; }
-  .form-grid, .faq-row { grid-template-columns: 1fr; }
-  label:has(textarea), .form-grid button { grid-column: auto; }
+  .form-grid, .faq-row, .spec-row { grid-template-columns: 1fr; }
+  label:has(textarea), .form-grid .full, .form-grid .form-submit { grid-column: auto; }
+  .spec-editor { grid-column: auto; }
 }

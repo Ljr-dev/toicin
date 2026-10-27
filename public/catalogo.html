@@ -3,18 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Catalogo</title>
+  <title>Catálogo | Minha Loja</title>
+  <meta name="description" content="Catálogo completo de produtos com fotos e especificações.">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/"><img id="logo" alt=""><span id="storeName">Loja Toicin</span></a>
-    <nav><a href="/">Inicio</a><a href="/faq.html">FAQ</a></nav>
+    <a class="brand" href="/"><img id="logo" alt="" hidden><span id="storeName">Minha Loja</span></a>
+    <nav><a href="/">Início</a><a href="/faq.html">FAQ</a><a class="cart-link" href="/carrinho.html">Carrinho <span class="cart-count" data-cart-count hidden>0</span></a></nav>
   </header>
   <main class="section">
-    <div class="section-title"><h1>Catalogo</h1><select id="categoryFilter"><option value="">Todas categorias</option></select></div>
-    <div class="grid products" id="catalogProducts"></div>
+    <div class="section-title"><h1>Catálogo</h1><select id="categoryFilter" class="category-filter" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select></div>
+    <div class="grid" id="catalogProducts"></div>
   </main>
+  <a id="fixedCart" class="fixed-cart" href="/carrinho.html" hidden>Carrinho <span class="cart-count" data-cart-count hidden>0</span></a>
+  <a id="fixedWhatsapp" class="fixed-whatsapp" target="_blank" rel="noopener" hidden>Fale no WhatsApp</a>
+  <script src="/js/common.js"></script>
+  <script src="/js/cart.js"></script>
   <script src="/js/catalogo.js"></script>
 </body>
 </html>

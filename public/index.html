@@ -3,37 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Loja Toicin</title>
+  <title>Minha Loja | Catálogo Online</title>
+  <meta name="description" content="Catálogo online com produtos, fotos, especificações e atendimento direto pelo WhatsApp.">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+
   <header class="site-header">
-    <a class="brand" href="/"><img id="logo" alt=""><span id="storeName">Loja Toicin</span></a>
-    <nav><a href="/catalogo.html">Catalogo</a><a href="/faq.html">FAQ</a><a id="instagram" href="#" target="_blank">Instagram</a></nav>
+    <a class="brand" href="/">
+      <img id="logo" alt="Logo" hidden>
+      <span id="storeName">Minha Loja</span>
+    </a>
+
+    <nav>
+      <a href="/catalogo.html">Catálogo</a>
+      <a href="/faq.html">FAQ</a>
+      <a class="cart-link" href="/carrinho.html">Carrinho <span class="cart-count" data-cart-count hidden>0</span></a>
+      <a id="instagram" href="#" target="_blank">Instagram</a>
+    </nav>
   </header>
+
   <main>
     <section class="hero">
       <div>
-        <p class="eyebrow" id="city"></p>
-        <h1 id="headline">Mobilidade eletrica para sua rotina</h1>
-        <p id="description"></p>
-        <div class="actions"><a class="btn" id="whatsappBtn" target="_blank">Chamar no WhatsApp</a><a class="btn ghost" href="/catalogo.html">Ver catalogo</a></div>
+        <p class="eyebrow" id="city" hidden></p>
+
+        <h1 id="headline">Tudo o que você procura em um só lugar</h1>
+
+        <p id="description">
+          Produtos selecionados com qualidade, preço justo e atendimento direto pelo WhatsApp.
+        </p>
+
+        <div class="actions">
+          <a class="btn" id="whatsappBtn" target="_blank" rel="noopener" hidden>
+            Falar no WhatsApp
+          </a>
+
+          <a class="btn ghost" href="/catalogo.html">
+            Ver catálogo
+          </a>
+        </div>
       </div>
     </section>
+
     <section class="section">
-      <div class="section-title"><h2>Produtos em destaque</h2><a href="/catalogo.html">Ver todos</a></div>
-      <div class="grid products" id="featuredProducts"></div>
+      <div class="section-title">
+        <h2>Produtos em destaque</h2>
+        <a href="/catalogo.html">Ver todos</a>
+      </div>
+
+      <div class="grid" id="featuredProducts"></div>
     </section>
+
     <section class="section">
       <h2>Categorias</h2>
       <div class="category-grid" id="categories"></div>
     </section>
+
     <section class="section faq-band">
       <h2>Perguntas frequentes</h2>
       <div id="faqs" class="faq-list"></div>
     </section>
   </main>
-  <footer><span id="footerStore"></span> - Veiculos eletricos</footer>
+
+  <footer>
+    <span id="footerStore">Minha Loja</span> · Todos os direitos reservados
+  </footer>
+
+  <a id="fixedCart" class="fixed-cart" href="/carrinho.html" hidden>Carrinho <span class="cart-count" data-cart-count hidden>0</span></a>
+  <a id="fixedWhatsapp" class="fixed-whatsapp" target="_blank" rel="noopener" hidden>Fale no WhatsApp</a>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/cart.js"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>

@@ -1,11 +1,22 @@
 async function loadFaq() {
   const [settings, items] = await Promise.all([
-    fetch('/api/settings').then((r) => r.json()),
-    fetch('/api/faqs').then((r) => r.json())
+    fetchJson('/api/settings'),
+    fetchJson('/api/faqs')
   ]);
-  storeName.textContent = settings.store_name || 'Loja Toicin';
-  logo.src = settings.logo_url || '';
-  logo.style.display = settings.logo_url ? 'block' : 'none';
-  faqs.innerHTML = items.map((f) => `<details><summary>${f.question}</summary><p>${f.answer}</p></details>`).join('') || '<p>Nenhuma pergunta cadastrada.</p>';
+
+  applyBranding(settings, 'Perguntas frequentes');
+
+  const faqs = document.getElementById('faqs');
+  if (!faqs) return;
+
+  faqs.innerHTML = items
+    .map((faq) => `<details><summary>${escapeHtml(faq.question)}</summary><p>${escapeHtml(faq.answer)}</p></details>`)
+    .join('');
+
+  if (!items.length) renderMessage(faqs, 'Nenhuma pergunta cadastrada.');
 }
-loadFaq();
+
+loadFaq().catch((error) => {
+  console.error(error);
+  renderMessage(document.getElementById('faqs'), 'Não foi possível carregar as perguntas agora.');
+});
